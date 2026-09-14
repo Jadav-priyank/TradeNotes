@@ -33,6 +33,12 @@ async function connectDB(customUri) {
     return mongoose.connection;
   }
 
+  if (!process.env.MONGODB_URI && (process.env.VERCEL || process.env.NODE_ENV === 'production')) {
+    const err = new Error('MONGODB_URI is not set in Vercel environment variables.');
+    console.error('❌ MongoDB Config Error:', err.message);
+    throw err;
+  }
+
   const defaultUri = process.env.NODE_ENV === 'test'
     ? (process.env.MONGODB_TEST_URI || 'mongodb://127.0.0.1:27017/notes_test_db')
     : (process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/notes_db');
@@ -40,7 +46,10 @@ async function connectDB(customUri) {
   const uri = customUri || defaultUri;
 
   try {
-    const conn = await mongoose.connect(uri);
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000
+    });
     console.log(`🍃 Connected to MongoDB: ${conn.connection.host}/${conn.connection.name}`);
     return conn;
   } catch (error) {
