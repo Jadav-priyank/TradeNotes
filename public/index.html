@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeNotes &bull; Trading Journal & PnL Tracker</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-background">
+    <div class="gradient-sphere sphere-1"></div>
+    <div class="gradient-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo-badge">
+          <svg class="trading-logo-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="logoBg" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#0f172a"/>
+                <stop offset="1" stop-color="#1e1b4b"/>
+              </linearGradient>
+              <linearGradient id="trendGrad" x1="4" y1="40" x2="40" y2="4" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#06b6d4"/>
+                <stop offset="0.5" stop-color="#3b82f6"/>
+                <stop offset="1" stop-color="#10b981"/>
+              </linearGradient>
+              <linearGradient id="bullGreen" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#34d399"/>
+                <stop offset="1" stop-color="#059669"/>
+              </linearGradient>
+              <linearGradient id="bearRed" x1="0" y1="0" x2="0" y2="1">
+                <stop stop-color="#f87171"/>
+                <stop offset="1" stop-color="#dc2626"/>
+              </linearGradient>
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <!-- Badge Base -->
+            <rect x="1" y="1" width="42" height="42" rx="12" fill="url(#logoBg)" stroke="rgba(99, 102, 241, 0.5)" stroke-width="1.5"/>
+            
+            <!-- Candlestick 1 (Bearish) -->
+            <line x1="11" y1="15" x2="11" y2="29" stroke="#f87171" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+            <rect x="8.5" y="18" width="5" height="7" rx="1.5" fill="url(#bearRed)" opacity="0.85"/>
+            
+            <!-- Candlestick 2 (Bullish) -->
+            <line x1="21" y1="11" x2="21" y2="27" stroke="#34d399" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+            <rect x="18.5" y="14" width="5" height="10" rx="1.5" fill="url(#bullGreen)"/>
+            
+            <!-- Candlestick 3 (Strong Bullish) -->
+            <line x1="31" y1="7" x2="31" y2="23" stroke="#34d399" stroke-width="1.2" stroke-linecap="round"/>
+            <rect x="28.5" y="10" width="5" height="9" rx="1.5" fill="url(#bullGreen)"/>
+
+            <!-- Upward Trendline with Glowing Head -->
+            <path d="M7 31 Q 17 25, 24 17 T 36 9" stroke="url(#trendGrad)" stroke-width="2.5" stroke-linecap="round" filter="url(#glow)"/>
+            <circle cx="36" cy="9" r="2.8" fill="#34d399" filter="url(#glow)"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Trade<span>Notes</span></h1>
+          <p class="tagline">Trading Journal &bull; Live PnL &bull; Monthly Analytics</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/api-docs" target="_blank" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Swagger Docs
+        </a>
+        <div id="userBadge" class="user-badge hidden">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-info">
+            <span id="userNameDisplay" class="user-name">User</span>
+            <span id="userEmailDisplay" class="user-email">user@mail.com</span>
+          </div>
+          <button id="logoutBtn" class="btn-icon" title="Log Out">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Auth Container (when logged out) -->
+    <main id="authSection" class="auth-section">
+      <div class="auth-card glass-panel">
+        <div class="auth-tabs">
+          <button class="tab-btn active" id="tabLoginBtn" onclick="switchAuthTab('login')">Sign In</button>
+          <button class="tab-btn" id="tabRegisterBtn" onclick="switchAuthTab('register')">Register New User</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+          <h2>Welcome Back</h2>
+          <p class="form-desc">Log in to view your encrypted private notes.</p>
+          
+          <div class="form-group">
+            <label for="loginIdentifier">Username or Email</label>
+            <input type="text" id="loginIdentifier" placeholder="e.g. alice or alice@example.com" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+
+          <div class="auth-hint">
+            <span>💡 Quick test tip: Register two different users to verify private note isolation!</span>
+          </div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form hidden" onsubmit="handleRegister(event)">
+          <h2>Create Account</h2>
+          <p class="form-desc">Get your private sandbox for notes and thoughts.</p>
+          
+          <div class="form-group">
+            <label for="regUsername">Username</label>
+            <input type="text" id="regUsername" placeholder="e.g. alice" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="regEmail">Email Address</label>
+            <input type="email" id="regEmail" placeholder="e.g. alice@example.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label for="regPassword">Password (min 6 chars)</label>
+            <input type="password" id="regPassword" placeholder="••••••••" required autocomplete="new-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+
+        <div id="authAlert" class="alert-box hidden"></div>
+      </div>
+    </main>
+
+    <!-- Main App Dashboard (when logged in) -->
+    <main id="appDashboard" class="dashboard hidden">
+      <!-- Top Control Bar: Search, Date Filter & Actions -->
+      <section class="control-panel glass-panel">
+        <div class="filter-grid">
+          <!-- Filter by Title / Symbol (BTC / XAU) -->
+          <div class="filter-item search-box">
+            <label for="filterTitleSelect">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              Filter by Title / Symbol
+            </label>
+            <select id="filterTitleSelect" onchange="handleFilterTitleSelectChange(this.value)">
+              <option value="">All (Show All)</option>
+              <option value="BTC">BTC</option>
+              <option value="XAU">XAU</option>
+              <option value="custom">Custom Search...</option>
+            </select>
+            <input type="text" id="searchTitleInput" class="hidden mt-2" placeholder="Type title keywords..." oninput="debounceFetchNotes()">
+          </div>
+
+          <!-- Filter by Month -->
+          <div class="filter-item">
+            <label for="filterMonthSelect">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              Month
+            </label>
+            <select id="filterMonthSelect" onchange="handleMonthSelectChange(this.value)">
+              <option value="">All Months</option>
+            </select>
+          </div>
+
+          <!-- Date Filter (Start Date) -->
+          <div class="filter-item">
+            <label for="filterStartDate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              From Date
+            </label>
+            <input type="date" id="filterStartDate" onchange="handleDateRangeChange()">
+          </div>
+
+          <!-- Date Filter (End Date) -->
+          <div class="filter-item">
+            <label for="filterEndDate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              To Date
+            </label>
+            <input type="date" id="filterEndDate" onchange="handleDateRangeChange()">
+          </div>
+
+          <!-- Sorting -->
+          <div class="filter-item sort-item">
+            <label for="sortBySelect">Sort By</label>
+            <div class="sort-inputs">
+              <select id="sortBySelect" onchange="fetchNotes()">
+                <option value="createdAt">Date Created</option>
+                <option value="updatedAt">Date Updated</option>
+                <option value="title">Title (A-Z)</option>
+              </select>
+              <button id="sortOrderBtn" class="btn-icon-order" onclick="toggleSortOrder()" title="Toggle Asc/Desc">
+                <span id="sortOrderIcon">↓</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-bottom">
+          <div class="active-filter-tags" id="activeFilterTags"></div>
+          <div class="control-actions">
+            <button class="btn btn-outline btn-sm" onclick="clearFilters()">Reset Filters</button>
+            <button class="btn btn-primary" onclick="openNoteModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              New Note
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Bar -->
+      <section class="stats-row">
+        <div class="stat-card glass-panel stat-pnl-card">
+          <span class="stat-number pnl-neutral" id="statTotalPnl">$0.00</span>
+          <span class="stat-label">Total PnL (Filtered)</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-number" id="statTotalNotes">0</span>
+          <span class="stat-label">Total Notes</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-number" id="statFilteredNotes">0</span>
+          <span class="stat-label">Matching Query</span>
+        </div>
+        <div class="stat-card glass-panel">
+          <span class="stat-number" id="statActiveDate">All Time</span>
+          <span class="stat-label">Date Filter Scope</span>
+        </div>
+      </section>
+
+      <!-- Month Navigation Bar -->
+      <section class="month-nav-section glass-panel">
+        <div class="month-nav-header">
+          <div class="month-nav-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <span>Month Timeline</span>
+          </div>
+          <div class="month-nav-controls">
+            <button class="btn btn-secondary btn-sm" onclick="navigateMonth(-1)" title="Previous Month">« Prev</button>
+            <button class="btn btn-secondary btn-sm" onclick="setCurrentMonthFilter()" title="Current Month">This Month</button>
+            <button class="btn btn-secondary btn-sm" onclick="navigateMonth(1)" title="Next Month">Next »</button>
+            <button class="btn btn-outline btn-sm" onclick="handleMonthSelectChange('')">All Months</button>
+          </div>
+        </div>
+        <div class="month-chips-strip" id="monthTabsStrip">
+          <!-- Dynamic Month Chips -->
+        </div>
+      </section>
+
+      <!-- Notes Content Area -->
+      <section class="notes-section">
+        <div class="section-header">
+          <h3 class="section-title" id="notesSectionHeading">Your Notes</h3>
+        </div>
+
+        <div id="notesLoading" class="loading-state hidden">
+          <div class="spinner"></div>
+          <p>Loading notes...</p>
+        </div>
+
+        <div id="notesEmptyState" class="empty-state hidden">
+          <div class="empty-icon">📝</div>
+          <h3 id="emptyStateTitle">No Notes Found</h3>
+          <p id="emptyStateMessage">You haven't created any notes yet or no notes match your current filters.</p>
+          <button class="btn btn-primary mt-3" onclick="openNoteModal()">Create Your First Note</button>
+        </div>
+
+        <div id="notesContainer"></div>
+
+        <!-- Pagination -->
+        <div id="paginationBar" class="pagination-bar hidden">
+          <button id="prevPageBtn" class="btn btn-secondary btn-sm" onclick="changePage(-1)">← Previous</button>
+          <span id="pageInfo" class="page-info">Page 1 of 1</span>
+          <button id="nextPageBtn" class="btn btn-secondary btn-sm" onclick="changePage(1)">Next →</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Note Create/Edit Modal -->
+  <div id="noteModal" class="modal-overlay hidden" onclick="handleModalBackdropClick(event)">
+    <div class="modal-dialog glass-panel">
+      <div class="modal-header">
+        <h3 id="modalTitle">Create New Note</h3>
+        <button class="btn-close" onclick="closeNoteModal()">×</button>
+      </div>
+      <form id="noteForm" onsubmit="handleSaveNote(event)">
+        <input type="hidden" id="noteEditId">
+
+        <div class="form-group">
+          <label for="noteTitleSelect">Note Title / Symbol *</label>
+          <select id="noteTitleSelect" onchange="handleNoteTitleSelectChange(this.value)">
+            <option value="BTC">BTC</option>
+            <option value="XAU">XAU</option>
+            <option value="custom">Custom Title...</option>
+          </select>
+          <input type="text" id="noteTitleInput" class="hidden mt-2" placeholder="e.g. BTC Breakout Analysis" required>
+        </div>
+
+        <!-- Image Attachment (After Title) -->
+        <div class="form-group">
+          <label for="noteImageUrlInput">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Image / Chart (Optional)
+          </label>
+          <div class="image-input-wrapper">
+            <input type="text" id="noteImageUrlInput" placeholder="Paste image URL or browse image..." oninput="handleImagePreview(this.value)">
+            <label for="noteImageFileInput" class="btn btn-secondary btn-sm btn-upload" title="Upload Image">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload
+            </label>
+            <input type="file" id="noteImageFileInput" accept="image/*" class="hidden" onchange="handleImageFileUpload(event)">
+          </div>
+          <div id="imagePreviewContainer" class="image-preview-box hidden mt-2">
+            <img id="noteImagePreview" src="" alt="Image Preview" class="preview-img">
+            <button type="button" class="btn-remove-image" onclick="clearImageAttachment()" title="Remove Image">✕</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="noteContentInput">Content *</label>
+          <textarea id="noteContentInput" rows="6" placeholder="Write your markdown/notes content here..." required></textarea>
+        </div>
+
+        <!-- PnL (In place of tags) -->
+        <div class="form-group">
+          <label for="notePnlInput">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            PnL Value (Profit & Loss in $)
+          </label>
+          <div class="pnl-input-wrapper">
+            <input type="text" inputmode="decimal" id="notePnlInput" placeholder="Type manual number (e.g. +250 or -14)" oninput="handlePnlInputStyle(this)" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Note Date (Optional for month-wise back-entry) -->
+        <div class="form-group">
+          <label for="noteCustomDateInput">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            Note Date (Optional)
+          </label>
+          <input type="datetime-local" id="noteCustomDateInput">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeNoteModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveNoteBtn">Save Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
