@@ -165,6 +165,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .user-badge {
@@ -175,6 +176,8 @@ body {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--surface-glass-border);
   border-radius: var(--radius-full);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .user-avatar {
@@ -188,22 +191,31 @@ body {
   justify-content: center;
   font-weight: 600;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .user-name {
   font-size: 13px;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-email {
   font-size: 11px;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Buttons */
@@ -1052,21 +1064,312 @@ input[type=number] {
   margin-bottom: 8px;
 }
 
-/* Responsive */
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .app-container {
+    padding: 20px 16px 50px;
+  }
+  .filter-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
+  .app-container {
+    padding: 14px 12px 40px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .brand {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .header-actions .btn {
+    padding: 8px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .user-badge {
+    padding: 5px 10px;
+    gap: 8px;
+    max-width: calc(100% - 130px);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .user-info {
+    max-width: 140px;
+    min-width: 0;
+  }
+
+  .control-panel {
+    padding: 16px 14px;
+    margin-bottom: 20px;
+  }
+
   .filter-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
+
+  .control-bottom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+
+  .control-actions {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .control-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    padding: 12px 14px;
+  }
+
+  .stat-number {
+    font-size: 22px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .month-nav-section {
+    padding: 14px;
+    margin-bottom: 20px;
+  }
+
+  .month-nav-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .month-nav-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .month-nav-controls .btn {
+    padding: 6px 4px;
+    font-size: 12px;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .notes-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .note-card {
+    padding: 16px;
+  }
+
+  .note-card-img {
+    max-height: 280px;
+  }
+
+  .modal-dialog {
+    padding: 20px 16px;
+    margin: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 8px;
+  }
+
+  .modal-footer .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 10px 8px 36px;
+  }
+
+  .app-header {
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-logo-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .trading-logo-svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .tagline {
+    font-size: 11px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header-actions .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .header-actions .btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .user-badge {
+    padding: 4px 8px;
+    gap: 6px;
+    max-width: calc(100% - 110px);
+  }
+
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .user-info {
+    max-width: 100px;
+  }
+
+  .user-name {
+    font-size: 12px;
+  }
+
+  .user-email {
+    font-size: 10px;
+    max-width: 100px;
+  }
+
+  .month-nav-controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .image-input-wrapper {
+    display: flex;
+    gap: 6px;
+  }
+
+  .image-input-wrapper input {
+    min-width: 0;
+  }
+
+  .btn-upload {
+    padding: 8px 10px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .stat-card {
+    padding: 10px 12px;
+  }
+
+  .stat-number {
+    font-size: 19px;
+  }
+
+  .stat-label {
+    font-size: 10.5px;
+  }
+
+  .auth-card {
+    padding: 20px 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .note-header {
+    gap: 8px;
+  }
+
+  .note-title {
+    font-size: 15px;
+  }
+
+  .note-card-img {
+    max-height: 240px;
+  }
+}
+
+@media (max-width: 360px) {
+  .user-email {
+    display: none;
+  }
+
+  .user-info {
+    max-width: 75px;
+  }
+
   .stats-row {
     grid-template-columns: 1fr;
   }
-  .app-header {
-    flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
+
+  .header-actions .btn {
+    padding: 6px 8px;
+    font-size: 11px;
   }
-  .header-actions {
-    width: 100%;
-    justify-content: space-between;
+
+  .header-actions .btn svg {
+    display: none;
   }
 }
