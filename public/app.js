@@ -62,7 +62,6 @@ const toast = document.getElementById('toast');
 const imageLightboxModal = document.getElementById('imageLightboxModal');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxTitle = document.getElementById('lightboxTitle');
-const lightboxOpenLink = document.getElementById('lightboxOpenLink');
 
 // API Helper
 async function apiRequest(endpoint, options = {}) {
@@ -916,7 +915,6 @@ function openImageLightbox(url, title = 'Chart Preview') {
   if (!url) return;
   if (lightboxImg) lightboxImg.src = url;
   if (lightboxTitle) lightboxTitle.textContent = `${title || 'Note'} • Image Preview`;
-  if (lightboxOpenLink) lightboxOpenLink.href = url;
   if (imageLightboxModal) imageLightboxModal.classList.remove('hidden');
 }
 
