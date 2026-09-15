@@ -1083,44 +1083,38 @@ input[type=number] {
   }
 
   .app-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-    padding: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
 
   .brand {
-    width: 100%;
+    flex: 1;
+    min-width: 180px;
     justify-content: flex-start;
   }
 
   .header-actions {
-    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 8px;
-    flex-wrap: nowrap;
-  }
-
-  .header-actions .btn {
-    padding: 8px 12px;
-    font-size: 13px;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .user-badge {
     padding: 5px 10px;
     gap: 8px;
-    max-width: calc(100% - 130px);
+    max-width: 220px;
     min-width: 0;
     box-sizing: border-box;
   }
 
   .user-info {
-    max-width: 140px;
+    max-width: 130px;
     min-width: 0;
   }
 
