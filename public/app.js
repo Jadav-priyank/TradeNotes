@@ -59,6 +59,11 @@ const notePnlInput = document.getElementById('notePnlInput');
 const noteCustomDateInput = document.getElementById('noteCustomDateInput');
 const toast = document.getElementById('toast');
 
+const imageLightboxModal = document.getElementById('imageLightboxModal');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxTitle = document.getElementById('lightboxTitle');
+const lightboxOpenLink = document.getElementById('lightboxOpenLink');
+
 // API Helper
 async function apiRequest(endpoint, options = {}) {
   const headers = {
@@ -358,8 +363,8 @@ function populateMonthOptions(monthlyBreakdown = []) {
 
     monthlyBreakdown.forEach(item => {
       const label = getMonthLabel(item.month);
-      const pnlSign = item.totalPnL > 0 ? `+$${item.totalPnL}` : (item.totalPnL < 0 ? `-$${Math.abs(item.totalPnL)}` : `$0`);
-      html += `<option value="${item.month}">${label} (${item.count} notes • ${pnlSign})</option>`;
+      const pnlInfo = formatPnL(item.totalPnL);
+      html += `<option value="${item.month}">${label} (${item.count} notes • ${pnlInfo.text})</option>`;
     });
 
     filterMonthSelect.innerHTML = html;
@@ -495,10 +500,10 @@ function parsePnLValue(raw) {
 
 function formatPnL(num) {
   const n = typeof num === 'number' ? num : parsePnLValue(num);
-  const abs = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  if (n > 0) return { text: `+$${abs}`, cls: 'pnl-positive', val: n };
-  if (n < 0) return { text: `-$${abs}`, cls: 'pnl-negative', val: n };
-  return { text: `$${abs}`, cls: 'pnl-neutral', val: 0 };
+  const abs = Math.abs(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (n > 0) return { text: `+₹${abs}`, cls: 'pnl-positive', val: n };
+  if (n < 0) return { text: `-₹${abs}`, cls: 'pnl-negative', val: n };
+  return { text: `₹${abs}`, cls: 'pnl-neutral', val: 0 };
 }
 
 function handlePnlInputStyle(input) {
@@ -547,15 +552,28 @@ function createNoteCardElement(note) {
   const pnlInfo = formatPnL(note.pnl);
   const pnlBadgeHtml = `<div class="pnl-badge ${pnlInfo.cls}"><span style="opacity:0.75; font-size:11px; margin-right:2px;">PnL:</span> ${pnlInfo.text}</div>`;
 
-  const imageHtml = note.imageUrl
-    ? `<div class="note-card-img-container"><img src="${escapeHtml(note.imageUrl)}" alt="${escapeHtml(note.title)}" class="note-card-img" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+  const hasImage = Boolean(note.imageUrl);
+  const safeImgUrl = hasImage ? escapeHtml(note.imageUrl) : '';
+  const safeTitle = escapeHtml(note.title);
+
+  const previewBtnHtml = hasImage
+    ? `<button class="btn-icon btn-preview-action" onclick="openImageLightbox('${safeImgUrl}', '${safeTitle}')" title="Preview Image / Chart">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </button>`
+    : '';
+
+  const imageHtml = hasImage
+    ? `<div class="note-card-img-container" onclick="openImageLightbox('${safeImgUrl}', '${safeTitle}')" title="Click to preview image">
+        <img src="${safeImgUrl}" alt="${safeTitle}" class="note-card-img" loading="lazy" onerror="this.parentElement.style.display='none'">
+      </div>`
     : '';
 
   card.innerHTML = `
     <div>
       <div class="note-header">
-        <h4 class="note-title">${escapeHtml(note.title)}</h4>
+        <h4 class="note-title">${safeTitle}</h4>
         <div class="note-actions">
+          ${previewBtnHtml}
           <button class="btn-icon" onclick="openNoteModal('${note.id}')" title="Edit Note">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
           </button>
@@ -892,6 +910,37 @@ async function handleDeleteNote(id) {
     showToast(err.message || 'Failed to delete note', 'error');
   }
 }
+
+// Lightbox (Image Preview)
+function openImageLightbox(url, title = 'Chart Preview') {
+  if (!url) return;
+  if (lightboxImg) lightboxImg.src = url;
+  if (lightboxTitle) lightboxTitle.textContent = `${title || 'Note'} • Image Preview`;
+  if (lightboxOpenLink) lightboxOpenLink.href = url;
+  if (imageLightboxModal) imageLightboxModal.classList.remove('hidden');
+}
+
+function closeImageLightbox() {
+  if (imageLightboxModal) imageLightboxModal.classList.add('hidden');
+  if (lightboxImg) lightboxImg.src = '';
+}
+
+function handleLightboxBackdropClick(event) {
+  if (event.target === imageLightboxModal) {
+    closeImageLightbox();
+  }
+}
+
+// Global keyboard listeners
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (imageLightboxModal && !imageLightboxModal.classList.contains('hidden')) {
+      closeImageLightbox();
+    } else if (noteModal && !noteModal.classList.contains('hidden')) {
+      closeNoteModal();
+    }
+  }
+});
 
 // Toast Notification
 function showToast(message, type = 'info') {

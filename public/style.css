@@ -916,6 +916,8 @@ input[type=number] {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  cursor: pointer;
 }
 
 .note-card-img {
@@ -928,8 +930,18 @@ input[type=number] {
   border-radius: var(--radius-sm);
 }
 
-.note-card:hover .note-card-img {
-  transform: scale(1.01);
+.note-card:hover .note-card-img,
+.note-card-img-container:hover .note-card-img {
+  transform: scale(1.02);
+}
+
+.btn-preview-action {
+  color: #38bdf8;
+}
+
+.btn-preview-action:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #7dd3fc !important;
 }
 
 /* Empty & Loading States */
@@ -1026,6 +1038,80 @@ input[type=number] {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
+}
+
+/* Lightbox Modal */
+.lightbox-dialog {
+  width: 95vw;
+  max-width: 1100px;
+  max-height: 94vh;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  animation: modalZoomIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalZoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lightbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.lightbox-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.lightbox-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lightbox-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  min-height: 200px;
+  max-height: calc(94vh - 80px);
+  cursor: zoom-out;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: calc(94vh - 104px);
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  cursor: default;
+  transition: transform 0.2s ease;
 }
 
 /* Toast */
